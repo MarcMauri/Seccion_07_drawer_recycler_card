@@ -1,11 +1,16 @@
-package es.marcmauri.seccion_07_drawer_recycler_card
+package es.marcmauri.seccion_07_drawer_recycler_card.activities
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import es.marcmauri.mylibrary.ToolbarActivity
+import es.marcmauri.seccion_07_drawer_recycler_card.R
+import es.marcmauri.seccion_07_drawer_recycler_card.fragments.ArrivalsFragment
+import es.marcmauri.seccion_07_drawer_recycler_card.fragments.DeparturesFragment
+import es.marcmauri.seccion_07_drawer_recycler_card.fragments.HomeFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : ToolbarActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -16,6 +21,8 @@ class MainActivity : ToolbarActivity(), NavigationView.OnNavigationItemSelectedL
         toolbarToLoad(toolbar as Toolbar)
 
         setNavDrawer()
+        fragmentTransaction(HomeFragment())
+        navView.menu.getItem(0).isChecked = true
     }
 
     private fun setNavDrawer() {
@@ -28,8 +35,18 @@ class MainActivity : ToolbarActivity(), NavigationView.OnNavigationItemSelectedL
         navView.setNavigationItemSelectedListener(this)
     }
 
+    private fun fragmentTransaction(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit()
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        //when(item.itemId)
+        when(item.itemId) {
+            R.id.nav_home -> fragmentTransaction(HomeFragment())
+            R.id.nav_departures -> fragmentTransaction(DeparturesFragment())
+            R.id.nav_arrivals -> fragmentTransaction(ArrivalsFragment())
+        }
         return true
     }
 }
