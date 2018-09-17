@@ -3,23 +3,55 @@ package es.marcmauri.seccion_07_drawer_recycler_card.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import es.marcmauri.seccion_07_drawer_recycler_card.R
+import es.marcmauri.seccion_07_drawer_recycler_card.adapters.FlightAdapter
+import es.marcmauri.seccion_07_drawer_recycler_card.listeners.RecyclerFlightListener
 import es.marcmauri.seccion_07_drawer_recycler_card.models.Flight
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import es.marcmauri.seccion_07_drawer_recycler_card.toast
+import kotlinx.android.synthetic.main.fragment_departures.view.*
 
 class DeparturesFragment : Fragment() {
 
+    private val list: ArrayList<Flight> by lazy { getFlights() }
+
+    private lateinit var recycler: RecyclerView
+    private lateinit var adapter: FlightAdapter
+    private val layoutManager by lazy { LinearLayoutManager(context) }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_departures, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_departures, container, false)
+
+        recycler = rootView.recyclerView as RecyclerView
+        setRecyclerView()
+
+        return rootView
+    }
+
+    private fun setRecyclerView() {
+        recycler.setHasFixedSize(true)
+        recycler.itemAnimator = DefaultItemAnimator()
+        recycler.layoutManager = layoutManager
+
+        adapter = (FlightAdapter(list, object: RecyclerFlightListener {
+            override fun onClick(flight: Flight, position: Int) {
+                activity?.toast("Let's go to ${flight.city}")
+            }
+
+            override fun onDelete(flight: Flight, position: Int) {
+                list.remove(flight)
+                adapter.notifyItemRemoved(position)
+                activity?.toast("${flight.city} has been removed!")
+            }
+        }))
+
+        recycler.adapter = adapter
     }
 
     private fun getFlights(): ArrayList<Flight> {
