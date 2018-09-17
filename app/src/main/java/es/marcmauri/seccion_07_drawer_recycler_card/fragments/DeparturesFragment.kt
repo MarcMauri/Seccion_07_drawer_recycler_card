@@ -26,8 +26,9 @@ class DeparturesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.fragment_departures, container, false)
+        activity?.setTitle(R.string.departures_fragment_title)
 
+        val rootView = inflater.inflate(R.layout.fragment_departures, container, false)
         recycler = rootView.recyclerView as RecyclerView
         setRecyclerView()
 
